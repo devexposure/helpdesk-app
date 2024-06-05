@@ -41,28 +41,31 @@
                                     @if ($ug->name == 'super-admin')
                                         @php
                                             $idHref = '#custom-tabs-two-super-admin';
+                                            $idTabPanel = 'custom-tabs-two-super-admin';
                                             $idTab = 'super-admin-tab';
                                             $groupValue = $ug->id;
                                         @endphp
                                     @elseif($ug->name == 'operator')
                                         @php
                                             $idHref = '#custom-tabs-operator';
+                                            $idTabPanel = 'custom-tabs-operator';
                                             $idTab = 'operator-tab';
                                             $groupValue = $ug->id;
                                         @endphp
                                     @else
                                         @php
                                             $idHref = '#custom-tabs-two-reguler';
+                                            $idTabPanel = 'custom-tabs-two-reguler';
                                             $idTab = 'reguler-user-tab';
                                             $groupValue = $ug->id;
                                         @endphp
                                     @endif
                                     <li class="nav-item">
                                         <a class="nav-link group-tab-custom" id="{{ $idTab }}"
-                                            data-group="{{ $groupValue }}" data-module="{{ $menu->id }}""
-                                            data-toggle="pill" href="{{ $idHref }}" role="tab"
-                                            aria-controls="custom-tabs-two-home"
-                                            aria-selected="true">{{ Str::upper($ug->name) }}</a>
+                                            data-group="{{ $groupValue }}" data-module="{{ $menu->id }}"
+                                            data-panel="{{ $idTabPanel }}" data-toggle="pill" href="{{ $idHref }}"
+                                            role="tab" aria-selected="true">{{ Str::upper($ug->name) }}
+                                        </a>
                                     </li>
                                 @endforeach
                             </ul>
@@ -85,25 +88,30 @@
                                     @endif
                                     <div class="tab-pane fade show" id="{{ $tabPaneId }}" role="tabpanel"
                                         aria-labelledby="{{ $tabPaneId }}">
-                                        <form action="javascript:;" method="post" class="form-module-role" id="">
+                                        <form action="javascript:;" method="post" class="form-module-role">
                                             @csrf
+                                            @method('POST')
+                                            <input type="hidden" name="moduleValue"
+                                                value="{{ base64_encode($menu->id) }}">
+                                            <input type="hidden" name="formValue" class="form-values"
+                                                id="{{ 'form-values-' . $tabPaneId }}">
+                                            <input type="hidden" name="groupValue" class="group-values"
+                                                id="{{ 'group-values-' . $tabPaneId }}">
                                             <div class="form-group row">
-                                                <input type="hidden" name="moduleValue"
-                                                    value="{{ base64_encode($menu->id) }}">
-                                                <input type="hidden" name="groupValue" class="group-value-custom">
-                                                <label for="">{{ Str::upper($ugs->name) }}: Access
-                                                    Permission</label>
-                                                <select name="is_access" class="is-access" class="form-control">
+                                                <label>{{ Str::upper($ugs->name) }}: Access Permission</label>
+                                                <select name="is_access" class="is-access form-control"
+                                                    id="{{ 'is-access-' . $tabPaneId }}">
 
                                                 </select>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="">Function</label>
-                                                <input type="text" name="function" class="function-field" id=""
-                                                    class="form-control">
+                                                <label>Function</label>
+                                                <input type="text" name="function" class="function-field form-control"
+                                                    id="{{ 'function-field-' . $tabPaneId }}">
                                             </div>
                                             <div class="form-group row">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="btn btn-primary btn-update"
+                                                    id="{{ 'btn-update-' . $tabPaneId }}" disabled>Update</button>
                                                 <a href="{{ route('module_permission') }}"
                                                     class="btn btn-outline-secondary btn-back ml-1">Back</a>
                                             </div>
@@ -124,5 +132,5 @@
 @push('js-custom')
     <script src="{{ asset('theme/plugins/input_tags/tagsinput.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('dist/js/admin/module-permission/module-role.min.js?q=') . time() }}"></script>
+    <script src="{{ asset('dist/js/admin/module-permission/module-role-show.min.js?q=') . time() }}"></script>
 @endpush
